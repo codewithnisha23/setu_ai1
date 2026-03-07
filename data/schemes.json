@@ -1,0 +1,14 @@
+[
+  {
+  "name":"PM Kisan Samman Nidhi",
+  "description":"Provides ₹6000 per year income support to eligible farmers."
+  },
+  {
+  "name":"PM Awas Yojana",
+  "description":"Provides housing assistance to economically weaker sections."
+  },
+  {
+  "name":"Ayushman Bharat",
+  "description":"Health insurance coverage up to ₹5 lakh for poor families."
+  }
+  ]

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SetuAI Assistant</title>
+
+<style>
+
+    body{
+    font-family:Arial;
+    background:#eef2f7;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    padding:40px;
+    }
+    
+    .container{
+    display:flex;
+    gap:30px;
+    }
+    
+    .card{
+    background:white;
+    padding:25px;
+    width:350px;
+    border-radius:12px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    h2{
+    margin-bottom:15px;
+    }
+    
+    input{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    }
+    
+    button{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border-radius:6px;
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
+    }
+    
+    .ask{background:#1e6ee6;color:white;}
+    .mic{background:#16a085;color:white;}
+    .speak{background:#27ae60;color:white;}
+    .calc{background:#e67e22;color:white;}
+    
+    #response,#eligibilityResult{
+    margin-top:12px;
+    background:#f1f3f6;
+    padding:10px;
+    border-radius:6px;
+    min-height:40px;
+    }
+    
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="card">
+            <h2>🎤 SetuAI Assistant</h2>
+
+            <label>Select Language</label>
+            
+            <select id="language">
+            <option value="auto">Auto Detect</option>
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="mr">Marathi</option>
+            <option value="ta">Tamil</option>
+            <option value="bn">Bengali</option>
+            </select>
+            
+            <input id="query" placeholder="Ask about government schemes">
+        
+        <button class="ask" onclick="ask()">Ask</button>
+        <button class="mic" onclick="startVoice()">🎤 Speak</button>
+        <button class="speak" onclick="speakResponse()">🔊 Speak Response</button>
+        
+        <div id="response"></div>
+        
+        </div>
+        
+        
+        <div class="card">
+        
+        <h2>Eligibility Calculator</h2>
+        
+        <input id="income" placeholder="Enter Annual Income">
+        
+        <button class="calc" onclick="checkEligibility()">Check Eligibility</button>
+        
+        <div id="eligibilityResult"></div>
+        
+        </div>
+        
+        </div>
+
+<script>
+
+let lastResponse=""
+
+async function ask(){
+
+const query = document.getElementById("query").value
+const lang = document.getElementById("language").value
+
+const res = await fetch(`http://127.0.0.1:8000/ask?query=${query}&lang=${lang}`)
+
+const data = await res.json()
+
+document.getElementById("response").innerText =
+"Language: " + data.language + "\n\n" + data.response
+
+lastResponse = data.response
+
+}
+
+async function checkEligibility(){
+
+const income=document.getElementById("income").value
+
+const res=await fetch("http://127.0.0.1:8000/eligibility?income="+income)
+
+const data=await res.json()
+
+document.getElementById("eligibilityResult").innerText=data.result
+}
+
+function startVoice(){
+
+const recognition=new(window.SpeechRecognition||window.webkitSpeechRecognition)()
+
+recognition.lang="en-IN"
+
+recognition.start()
+
+recognition.onresult=function(event){
+
+const text=event.results[0][0].transcript
+
+document.getElementById("query").value=text
+
+ask()
+
+}
+}
+
+function speakResponse(){
+
+const lang=document.getElementById("language").value
+
+const speech=new SpeechSynthesisUtterance(lastResponse)
+
+if(lang=="hi") speech.lang="hi-IN"
+else if(lang=="mr") speech.lang="mr-IN"
+else if(lang=="ta") speech.lang="ta-IN"
+else if(lang=="bn") speech.lang="bn-IN"
+else speech.lang="en-IN"
+
+window.speechSynthesis.speak(speech)
+
+}
+</script>
+
+</body>
+</html>
