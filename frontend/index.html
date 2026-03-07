@@ -120,7 +120,7 @@ async function ask(){
 const query = document.getElementById("query").value
 const lang = document.getElementById("language").value
 
-const res = await fetch(`http://127.0.0.1:8000/ask?query=${query}&lang=${lang}`)
+const res = await fetch(`https://setu-ai1.onrender.com/ask?query=${query}&lang=${lang}`)
 
 const data = await res.json()
 
@@ -135,7 +135,7 @@ async function checkEligibility(){
 
 const income=document.getElementById("income").value
 
-const res=await fetch("http://127.0.0.1:8000/eligibility?income="+income)
+const res=await fetch("https://setu-ai1.onrender.com/eligibility?income="+income)
 
 const data=await res.json()
 
